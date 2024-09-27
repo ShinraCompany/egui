@@ -183,9 +183,9 @@ fn set_cursor_icon(cursor: egui::CursorIcon) -> Option<()> {
 /// Set the clipboard text.
 #[cfg(web_sys_unstable_apis)]
 fn set_clipboard_text(s: &str) {
-    let window = web_sys::window();
-    // if let Some(window) = web_sys::window() {
-        if let Some(clipboard) = window.navigator().clipboard() {
+    if let Some(window) = web_sys::window() {
+        let clipboard = window.navigator().clipboard();
+        // if let Some(clipboard) = window.navigator().clipboard() {
             let promise = clipboard.write_text(s);
             let future = wasm_bindgen_futures::JsFuture::from(promise);
             let future = async move {
@@ -194,15 +194,15 @@ fn set_clipboard_text(s: &str) {
                 }
             };
             wasm_bindgen_futures::spawn_local(future);
-        } else {
-            let is_secure_context = window.is_secure_context();
-            if is_secure_context {
-                log::warn!("window.navigator.clipboard is null; can't copy text");
-            } else {
-                log::warn!("window.navigator.clipboard is null; can't copy text, probably because we're not in a secure context. See https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts");
-            }
-        }
-    // }
+        // } else {
+        //     let is_secure_context = window.is_secure_context();
+        //     if is_secure_context {
+        //         log::warn!("window.navigator.clipboard is null; can't copy text");
+        //     } else {
+        //         log::warn!("window.navigator.clipboard is null; can't copy text, probably because we're not in a secure context. See https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts");
+        //     }
+        // }
+    }
 }
 
 fn cursor_web_name(cursor: egui::CursorIcon) -> &'static str {
